@@ -1,5 +1,16 @@
 <template>
-    <div>
+    <div v-if="loading" class="py-20">
+        <CustomLoader />
+    </div>
+    <div v-else>
+        <div class="py-8 px-24">
+            <div class="background-image pt-16">
+                <div class="flex flex-col items-center gap-4">
+                <p class="text-[#1E1F21] font-bold text-3xl font-sans">New Arrivals in Computing</p>
+                <button class="bg-[#2A54C7] rounded-2xl py-2.5 px-6 text-white">Shop now</button>
+            </div>
+            </div>
+        </div>
         <div class="block">
             <p class="explore-title">Best sellers</p>
             <div class="grouped">
@@ -28,9 +39,10 @@
 <script setup lang="ts">
 import ProductCard from '~/components/ProductCard.vue'
 import { ref, onMounted, computed } from 'vue';
+import CustomLoader from '~/components/CustomLoader.vue';
 
 const products = ref<Product[]>([]);
-
+const loading = ref(true)
 interface Product {
     id: number;
     title: string;
@@ -45,11 +57,15 @@ interface Product {
 }
 
 const fetchProducts = async () => {
+    loading.value = true
     try {
         const response = await fetch('https://fakestoreapi.com/products');
         products.value = await response.json();
+        loading.value = false
+
     } catch (error) {
         console.error('Error fetching products:', error);
+        loading.value = false
     }
 };
 
@@ -69,6 +85,15 @@ const mostWanted = computed(() => {
 </script>
 
 <style scoped>
+.background-image {
+  background-image: url('../assets/wallpaper.png'); 
+  background-size: cover; 
+  background-repeat: no-repeat; 
+  height: 507px; 
+  display: flex; 
+  justify-content: center;
+  color: white; 
+}
 .grouped {
     width: 100%;
 
@@ -80,7 +105,6 @@ const mostWanted = computed(() => {
 
 .block p {
     padding: 0px 20px;
-    /* background-color: red; */
 }
 
 .product-grid {

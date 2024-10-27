@@ -1,160 +1,188 @@
 <template>
   <div class="cart-page">
-    <h1>Shopping Cart</h1>
-    <div v-if="cartItems.length === 0">
-      <p>Your cart is empty.</p>
+    <h1 class="text-[#787879] font-normal text-lg">Shopping Cart</h1>
+    <div v-if="cartItems.length === 0" class="flex justify-center items-center py-10">
+      <p class="font-bold text-3xl text-[#787879]">Your cart is empty.</p>
     </div>
-    <div v-else class="flex justify-between">
-      <div >
+    <div v-else class="flex w-full lg:flex-row flex-col gap-10 justify-between">
+      <div class="lg:w-[60%] w-full">
         <div>
           <ul>
-            <li v-for="item in cartItems" :key="item.id">
+            <li v-for="item in cartItems" :key="item.id" class="border-b gap-6 py-6 flex ">
               <img :src="item.image" alt="Product Image" />
-              <div>
-                <h2>{{ item.title }}</h2>
-                <p>Price: ${{ item.price }}</p>
-                <div class="quantity-control">
-                  <button @click="decreaseQuantity(item.id)">-</button>
-                  <span>{{ item.quantity }}</span>
-                  <button @click="increaseQuantity(item.id)">+</button>
+              <div class="flex justify-between flex-col gap-6 w-full">
+                <div class="flex justify-between">
+                  <div>
+                    <h2>{{ item.title }}</h2>
+                    <button @click="removeFromCart(item.id)" class="underline text-[10px] text-[#C33434]">Remove
+                      item</button>
+                  </div>
+                  <div>
+                    <p class="font-normal text-base"> ${{ item.price }}</p>
+                  </div>
                 </div>
-                <button @click="removeFromCart(item.id)">Remove</button>
+                <div class="flex justify-between items-center">
+                  <div class="quantity-control mt-4">
+                    <button @click="decreaseQuantity(item.id)">-</button>
+                    <span class="border px-4">{{ item.quantity }}</span>
+                    <button @click="increaseQuantity(item.id)">+</button>
+                  </div>
+                  <p>${{ (item.price * item.quantity).toFixed(2) }}</p>
+
+                </div>
+
               </div>
             </li>
           </ul>
-          <p>Total Items: {{ totalItems }}</p>
-          <p>Total Price: ${{ totalPrice.toFixed(2) }}</p>
         </div>
       </div>
-      <div class="border rounded-md">
-        <h2>SUMMARY</h2>
-        <div>
-          <div>
-            <p>Subtotal</p>
-            <p></p>
+      <div class="border rounded-md px-3 h-[240px] py-4 flex flex-col w-full lg:w-[30%]">
+        <p class="mb-4 text-[#4B4B4D] text-xs font-bold">SUMMARY</p>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between">
+            <p class="font-normal text-sm">Subtotal</p>
+            <p>$ {{ totalPrice.toFixed(2) || 0 }}</p>
+          </div>
+          <div class="flex justify-between">
+            <p class="font-normal text-sm">Shipping</p>
+            <p class="font-normal text-lg">$ {{ shippingCost }}</p>
+          </div>
+          <div class="flex justify-between">
+            <p class="font-normal text-sm">Total</p>
+            <p class="">$ {{ total }}</p>
           </div>
           <div>
-            <p>Shipping</p>
-            <p></p>
-          </div>
-          <div>
-            <p>Total</p>
-            <p></p>
-          </div>
-          <div>
-            <button class="rounded-lg">Proceed to checkout</button>
+            <button class="rounded-lg bg-[#2A54C7] py-2 w-full text-white mt-2">Proceed to checkout</button>
           </div>
         </div>
       </div>
     </div>
     <div>
-      <div class="more_items block mt-10">
-            <p class="explore-title">More items to explore</p>
-            <div class="grouped">
-                <div class="product-grid gap-2 ">
-                    <ProductCard v-for="product in bestSellers" :key="product.id" :product="product" />
-                </div>
-            </div>
+      <div v-if="loading" class="py-10">
+        <CustomLoader />
+      </div>
+      <div v-else class="more_items block mt-10">
+        <p class="explore-title">More items to explore</p>
+        <div class="grouped">
+          <div class="product-grid gap-2">
+            <ProductCard v-for="product in bestSellers" :key="product.id" :product="product" />
+          </div>
         </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useCartStore } from '~/stores/cart';
+import CustomLoader from '~/components/CustomLoader.vue';
 
+
+const loading = ref(true)
 const cartStore = useCartStore();
-const cartItems = cartStore.items; // Access cart items
+const cartItems = computed(() => cartStore.items);
 const products = ref<Product[]>([]);
-
+const shippingCost = ref(45.00);
 
 interface Product {
-    id: number;
-    title: string;
-    price: number;
-    description: string;
-    category: string;
-    image: string;
-    rating: {
-        rate: number;
-        count: number;
-    };
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  image: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
 }
+
+const total = computed(() => {
+  return (totalPrice.value + shippingCost.value).toFixed(2);
+});
+
 const removeFromCart = (productId: number) => {
-  cartStore.removeFromCart(productId); // Remove item from cart
+  cartStore.removeFromCart(productId); 
 };
 
 const increaseQuantity = (productId: number) => {
-  cartStore.increaseQuantity(productId); // Increase quantity
+  cartStore.increaseQuantity(productId);
 };
 
 const decreaseQuantity = (productId: number) => {
-  cartStore.decreaseQuantity(productId); // Decrease quantity
+  cartStore.decreaseQuantity(productId);
 };
 
 const totalItems = computed(() => {
-  return cartItems.reduce((total, item) => total + item.quantity, 0); // Total quantity of items
+  return cartItems.reduce((total, item) => total + item.quantity, 0); 
 });
 
 const totalPrice = computed(() => {
-  return cartStore.totalPrice; // Total price from the store
+  return cartStore.totalPrice; 
 });
 
 const fetchProducts = async () => {
-    try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        products.value = await response.json();
-    } catch (error) {
-        console.error('Error fetching products:', error);
-    }
+  loading.value = true
+
+  try {
+    const response = await fetch('https://fakestoreapi.com/products');
+    products.value = await response.json();
+    loading.value = false
+
+  } catch (error) {
+    loading.value = false
+
+    console.error('Error fetching products:', error);
+  }
 };
 
 onMounted(fetchProducts);
 
 const bestSellers = computed(() => {
-    return products.value.slice(0, 3);
+  return products.value.slice(0, 3);
 });
 </script>
 
 <style scoped>
 .product-grid {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1rem;
-    transition: box-shadow 0.3s ease, background-color 0.3s ease;
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  transition: box-shadow 0.3s ease, background-color 0.3s ease;
 }
+
 .cart-page {
   padding: 20px 90px;
 }
 
 .explore-title {
-    position: relative;
-    padding-left: 15px;
-    margin-bottom: 10px;
-    font-weight: 400;
-    font-size: 20px
+  position: relative;
+  padding-left: 15px;
+  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 20px
 }
 
 .explore-title::before {
-    content: "";
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    height: 100%;
-    width: 2px;
-    background-color: #2A54C7;
-    transform: translateY(-50%);
+  content: "";
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  height: 100%;
+  width: 2px;
+  background-color: #2A54C7;
+  transform: translateY(-50%);
 }
 
 .explore-title::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    height: 2px;
-    width: 100%;
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  height: 2px;
+  width: 100%;
 }
 
 .cart-page img {
@@ -187,5 +215,30 @@ const bestSellers = computed(() => {
   height: 20px;
   font-size: 16px;
   margin: 0 5px;
+}
+@media screen and (max-width: 1000px) {
+    .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+    }
+
+}
+
+@media screen and (max-width: 700px) {
+  .cart-page {
+        padding: 20px 60px;
+    }
+}
+
+@media screen and (max-width: 450px) {
+    .cart-page {
+  padding: 20px 20px;
+}
+
+    .product-grid {
+        grid-template-columns: repeat(1, 1fr);
+        gap: .5rem;
+    }
+
 }
 </style>

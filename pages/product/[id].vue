@@ -1,6 +1,5 @@
 <template>
     <div class="container">
-
         <!-- Breadcrumb Navigation -->
         <nav class="breadcrumb">
             <span class="breadcrumb-item">Home</span>
@@ -11,17 +10,20 @@
         </nav>
 
         <div class="product_block">
-            <div v-if="product" class="availiable_product">
-                <div class="img">
-                    <div>
-                        <p></p>
-                        <p></p>
-                        <p></p>
+            <div v-if="product" class=" px-28 flex gap-6 justify-between items-center ">
+                <div class="flex gap-5 w-[55%] h-[397px]">
+                    <div class="flex flex-col gap-4">
+                        <img src="../../assets/Rect-gray.png" class="w-[30px] h-[25px]" alt="">
+                        <img src="../../assets/Rect-gray.png" class="w-[30px] h-[25px]" alt="">
+                        <img src="../../assets/Rect-gray.png" class="w-[30px] h-[25px]" alt="">
+                        <img src="../../assets/Rect-gray.png" class="w-[30px] h-[25px]" alt="">
                     </div>
-                    <img :src="product.image" alt="Product image" />
+                    <div>
+                        <img :src="product.image" alt="Product image" class="w-full h-full" />
+                    </div>
 
                 </div>
-                <div class="product_content ">
+                <div class="  flex flex-col gap-3 w-[50%]">
                     <h1 class="title">{{ product.title }}</h1>
                     <p class="price">Price: ${{ product.price }}</p>
                     <button class="btn" @click="addToCart">
@@ -33,8 +35,8 @@
                     </div>
                 </div>
             </div>
-            <div v-else class="w-full justify-center p-20 text-4xl text-[]">
-                <p>Loading...</p>
+            <div v-else class="w-full justify-center items-center p-20 text-4xl ">
+                <CustomLoader />
             </div>
         </div>
 
@@ -54,6 +56,7 @@
 import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useCartStore } from '~/stores/cart';
+import CustomLoader from '~/components/CustomLoader.vue';
 
 const route = useRoute();
 const cartStore = useCartStore();
@@ -99,9 +102,9 @@ const bestSellers = computed(() => {
 onMounted(fetchProduct);
 
 const addToCart = () => {
-  if (product.value) {
-    cartStore.addToCart(product.value);
-  }
+    if (product.value) {
+        cartStore.addToCart(product.value);
+    }
 };
 </script>
 
@@ -128,15 +131,9 @@ const addToCart = () => {
 
 .availiable_product {
     display: flex;
-    align-items: center;
     padding: 20px 90px;
     gap: 40px;
     justify-content: space-between;
-}
-
-.img img {
-    width: 497px;
-    height: 397px;
 }
 
 .product_content {
@@ -170,21 +167,21 @@ const addToCart = () => {
 
 .product_details {
     color: #787879;
-
 }
-.product_details .details{
+
+.product_details .details {
     font-weight: 700;
     font-size: 12px;
     margin-bottom: 15px;
 }
-.product_details p{
+
+.product_details p {
     font-weight: 400;
     font-size: 16px;
 }
 
 .grouped {
     width: 100%;
-
 }
 
 .block {
@@ -193,7 +190,6 @@ const addToCart = () => {
 
 .block p {
     padding: 0px 20px;
-  
 }
 
 .explore-title {
@@ -248,14 +244,12 @@ const addToCart = () => {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
     }
-
 }
 
 @media screen and (max-width: 700px) {
     .block {
         padding: 20px 20px;
     }
-
 }
 
 @media screen and (max-width: 450px) {

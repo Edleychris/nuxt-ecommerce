@@ -7,7 +7,7 @@ interface Product {
   description: string;
   category: string;
   image: string;
-  quantity: number; // Add a quantity property
+  quantity: number;
 }
 
 interface CartState {
@@ -22,37 +22,40 @@ export const useCartStore = defineStore('cart', {
     addToCart(product: Product) {
       const existingProduct = this.items.find(item => item.id === product.id);
       if (existingProduct) {
-        existingProduct.quantity += 1; // Increase quantity if it already exists
+        existingProduct.quantity += 1;
       } else {
-        this.items.push({ ...product, quantity: 1 }); // Add new product with quantity 1
+        this.items.push({ ...product, quantity: 1 });
       }
     },
     removeFromCart(productId: number) {
-      this.items = this.items.filter(item => item.id !== productId);
+      const index = this.items.findIndex(item => item.id === productId)
+      if (index !== -1) {
+        this.items.splice(index, 1);
+      }
     },
     increaseQuantity(productId: number) {
       const product = this.items.find(item => item.id === productId);
       if (product) {
-        product.quantity += 1; // Increase quantity
+        product.quantity += 1;
       }
     },
     decreaseQuantity(productId: number) {
       const product = this.items.find(item => item.id === productId);
       if (product) {
         if (product.quantity > 1) {
-          product.quantity -= 1; // Decrease quantity if more than 1
+          product.quantity -= 1;
         } else {
-          this.removeFromCart(productId); // Remove item if quantity is 1
+          this.removeFromCart(productId);
         }
       }
     },
   },
   getters: {
     itemCount: (state) => {
-      return state.items.reduce((total, item) => total + item.quantity, 0); // Total item count
+      return state.items.reduce((total, item) => total + item.quantity, 0);
     },
     totalPrice: (state) => {
-      return state.items.reduce((total, item) => total + item.price * item.quantity, 0); // Total price
+      return state.items.reduce((total, item) => total + item.price * item.quantity, 0);
     },
   },
 });

@@ -1,7 +1,6 @@
 <template>
   <div class="product-card">
-    <img :src="product.image" alt="Product Image" @click="goToProduct"
-      class="product-image" />
+    <img :src="product.image" alt="Product Image" @click="goToProduct" class="product-image" />
     <div>
       <h2 class="title">{{ product.title }}</h2>
       <p class="price">${{ product.price }}</p>
@@ -26,40 +25,27 @@ const props = defineProps<{
 
 const goToProduct = () => {
   router.push(`/product/${props.product.id}`);
-  console.log(props.product.id)
 };
 
-const addToCart = () => {
-  console.log(`${props.product.title} added to cart!`)
-}
 </script>
 
 <style scoped>
 .product-card {
-  /* border: 1px solid #ccc; */
   border-radius: 8px;
   padding: 16px;
-  /* text-align: center; */
   align-items: center;
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 16px;
-  /* width: 300px; */
 }
 
 .product-card img {
   max-width: 100%;
   height: 300px;
-
-  /* border-radius: 50%;  */
   object-fit: cover;
-  /* Ensures the image covers the area without distortion */
   margin-bottom: 1rem;
-  /* Space between image and text */
   transition: transform 0.3s ease;
-  /* backface-visibility: hidden;  */
-  /* object-fit: ; */
 }
 
 .title {
@@ -75,7 +61,6 @@ const addToCart = () => {
 }
 
 .product-card:hover .product-image {
-  /* transform: rotateY(180deg); */
   transition: transform 0.3s ease;
 
 }
@@ -84,6 +69,7 @@ const addToCart = () => {
   .product-card img {
     max-width: 100%;
     height: 200px;
+    padding: 10px;
   }
 
 }

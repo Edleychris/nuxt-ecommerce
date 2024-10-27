@@ -47,10 +47,10 @@
             <div>
                 <p class="text-base">Support</p>
                 <ul class="text-[#A5A5A6] text-sm font-normal mt-2 flex flex-col gap-3">
-                    <li>Support</li>
-                    <li>Support</li>
-                    <li>Support</li>
-                    <li>Support</li>
+                    <li><img src="../assets/Rect-white.png" alt=""></li>
+                    <li><img src="../assets/Rect-white.png" alt=""></li>
+                    <li><img src="../assets/Rect-white.png" alt=""></li>
+                    <li><img src="../assets/Rect-white.png" alt=""></li>
                 </ul>
             </div>
 
@@ -63,7 +63,4 @@
 </script>
 
 <style scoped>
-.footer {
-    /* Add your styles here, similar to Footer.module.css */
-}
 </style>
