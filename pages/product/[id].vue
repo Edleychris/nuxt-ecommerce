@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="containers">
         <!-- Breadcrumb Navigation -->
         <nav class="breadcrumb">
             <span class="breadcrumb-item">Home</span>
@@ -9,9 +9,9 @@
             <span class="breadcrumb-item product-name">{{ product?.title }}</span>
         </nav>
 
-        <div class="product_block">
-            <div v-if="product" class=" px-28 flex gap-6 justify-between items-center ">
-                <div class="flex gap-5 w-[55%] h-[397px]">
+        <div class="product_block justify-center">
+            <div v-if="product" class=" lg:px-28 sm:px-16 px-6 md:px-20 flex md:flex-row flex-col gap-6 justify-between items-center ">
+                <div class="flex gap-5 lg:w-[55%] md:w-[40%] h-[397px]">
                     <div class="flex flex-col gap-4">
                         <img src="../../assets/Rect-gray.png" class="w-[30px] h-[25px]" alt="">
                         <img src="../../assets/Rect-gray.png" class="w-[30px] h-[25px]" alt="">
@@ -23,7 +23,7 @@
                     </div>
 
                 </div>
-                <div class="  flex flex-col gap-3 w-[50%]">
+                <div class="  flex flex-col gap-3 lg:w-[50%] md:w-[35%]">
                     <h1 class="title">{{ product.title }}</h1>
                     <p class="price">Price: ${{ product.price }}</p>
                     <button class="btn" @click="addToCart">
@@ -48,6 +48,7 @@
                 </div>
             </div>
         </div>
+        <Toast :message="toastMessage" />
     </div>
 </template>
 
@@ -57,11 +58,13 @@ import { useRoute } from 'vue-router';
 import { ref, onMounted, computed } from 'vue';
 import { useCartStore } from '~/stores/cart';
 import CustomLoader from '~/components/CustomLoader.vue';
+import Toast from '~/components/Toast.vue';
 
 const route = useRoute();
 const cartStore = useCartStore();
 const product = ref<Product | null>(null);
 const products = ref<Product[]>([]);
+const toastMessage = ref('');
 
 interface Product {
     id: number;
@@ -104,6 +107,7 @@ onMounted(fetchProduct);
 const addToCart = () => {
     if (product.value) {
         cartStore.addToCart(product.value);
+        toastMessage.value = 'Product added to cart';
     }
 };
 </script>
@@ -243,6 +247,9 @@ const addToCart = () => {
     .product-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 1rem;
+    }
+    .container {
+
     }
 }
 
