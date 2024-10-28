@@ -3,10 +3,10 @@
         <CustomLoader />
     </div>
     <div v-else>
-        <div class="py-8 px-24">
+        <div class=" py-8 lg:px-24 md:px-20">
             <div class="background-image pt-16">
                 <div class="flex flex-col items-center gap-4">
-                <p class="text-[#1E1F21] font-bold text-3xl font-sans">New Arrivals in Computing</p>
+                <p class="text-[#1E1F21] font-bold sm:text-xl text- md:text-3xl font-sans">New Arrivals in Computing</p>
                 <button class="bg-[#2A54C7] rounded-2xl py-2.5 px-6 text-white">Shop now</button>
             </div>
             </div>
@@ -42,6 +42,7 @@ import { ref, onMounted, computed } from 'vue';
 import CustomLoader from '~/components/CustomLoader.vue';
 
 const products = ref<Product[]>([]);
+    const searchTerm = ref('');
 const loading = ref(true)
 interface Product {
     id: number;
@@ -81,6 +82,15 @@ const mostVisited = computed(() => {
 
 const mostWanted = computed(() => {
     return products.value.slice(6, 9);
+});
+
+const filteredProducts = computed(() => {
+  if (!searchTerm.value) {
+    return products.value;
+  }
+  return products.value.filter((product) => {
+    return product.title.toLowerCase().includes(searchTerm.value.toLowerCase());
+  });
 });
 </script>
 

@@ -12,7 +12,8 @@
     <div class="flex items-center gap-6 justify-end lg:mt-0 mt-2">
       <div class="border rounded-lg p-2 flex items-center gap-2">
         <img src="../assets/search.png" alt="">
-        <input type="search" name="" id="" placeholder="Search" class="outline-none">
+        <input type="search" v-model="searchTerm" @input="onSearch" class="outline-none" placeholder="Search"
+          >
       </div>
       <div class="flex items-center gap-2">
         <img src="../assets/avatar.png" alt="">
@@ -45,7 +46,7 @@
     <div class="px-4">
       <div class="border rounded-lg p-2 flex items-center gap-2">
         <img src="../assets/search.png" alt="">
-        <input type="search" name="" id="" placeholder="Search" class="outline-none">
+        <input type="search" v-model="searchTerm" @input="onSearch" placeholder="Search" class="outline-none">
       </div>
     </div>
 
@@ -65,12 +66,18 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, defineEmits } from 'vue';
 import { useCartStore } from '~/stores/cart';
 
 const cartStore = useCartStore();
 const isMenuOpen = ref(false);
+const searchTerm = ref('');
+const emit = defineEmits(['search']);
 
+
+const onSearch = () => {
+  emit('search', searchTerm.value);
+};
 const toggleMenu = () => {
   isMenuOpen.value = !isMenuOpen.value;
 };
